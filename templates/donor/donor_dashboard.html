@@ -1,0 +1,75 @@
+{% extends 'donor/donorbase.html' %}
+{% block content %}
+
+<div class="p-6 bg-gray-50 min-h-screen">
+    
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Donor Dashboard</h1>
+        <p class="text-gray-500">Overview of your blood requests and activities.</p>
+    </div>
+
+    <!-- Quick Actions Navigation -->
+    <div class="flex flex-wrap gap-4 mb-8">
+        <a href="{% url 'donate-blood' %}" class="bg-brand-red hover:bg-brand-dark text-white font-medium py-2 px-5 rounded-lg shadow-sm hover:shadow transition-colors flex items-center gap-2">
+            <i class="fas fa-hand-holding-medical"></i> Donate Blood
+        </a>
+        <a href="{% url 'make-request' %}" class="bg-white border border-brand-red text-brand-red hover:bg-red-50 font-medium py-2 px-5 rounded-lg transition-colors flex items-center gap-2">
+            <i class="fas fa-sync-alt"></i> Request Blood
+        </a>
+        <a href="{% url 'donation-history' %}" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2 px-5 rounded-lg transition-colors flex items-center gap-2">
+            <i class="fas fa-history"></i> Donation History
+        </a>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        
+        <!-- Requests Made -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
+            <div class="bg-blue-50 text-blue-500 h-14 w-14 rounded-full flex items-center justify-center text-2xl shrink-0">
+                <i class="fas fa-sync-alt"></i>
+            </div>
+            <div>
+                <p class="text-gray-500 text-sm font-medium">Requests Made</p>
+                <p class="text-2xl font-bold text-gray-800">{{requestmade}}</p>
+            </div>
+        </div>
+
+        <!-- Pending Requests -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
+            <div class="bg-yellow-50 text-yellow-500 h-14 w-14 rounded-full flex items-center justify-center text-2xl shrink-0">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div>
+                <p class="text-gray-500 text-sm font-medium">Pending</p>
+                <p class="text-2xl font-bold text-gray-800">{{requestpending}}</p>
+            </div>
+        </div>
+
+        <!-- Approved Requests -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
+            <div class="bg-green-50 text-green-500 h-14 w-14 rounded-full flex items-center justify-center text-2xl shrink-0">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div>
+                <p class="text-gray-500 text-sm font-medium">Approved</p>
+                <p class="text-2xl font-bold text-gray-800">{{requestapproved}}</p>
+            </div>
+        </div>
+
+        <!-- Rejected Requests -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition-shadow">
+            <div class="bg-red-50 text-red-500 h-14 w-14 rounded-full flex items-center justify-center text-2xl shrink-0">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div>
+                <p class="text-gray-500 text-sm font-medium">Rejected</p>
+                <p class="text-2xl font-bold text-gray-800">{{requestrejected}}</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock content %}

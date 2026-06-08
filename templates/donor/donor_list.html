@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Donors</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css">
+    <!-- Configure Tailwind theme -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#ff0018',
+                            dark: '#99000e',
+                            light: '#ffe6e8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .dark body {
+            background-color: #0f172a;
+        }
+        /* Loader */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #ff0018;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="transition-colors duration-300">
+
+<!-- Dark mode toggle button -->
+<button id="themeToggle" class="fixed bottom-5 right-5 p-3 rounded-full bg-gray-800 text-white shadow-lg dark:bg-white dark:text-gray-800 z-50">
+    <i class="fas fa-moon dark:hidden"></i>
+    <i class="fas fa-sun hidden dark:block"></i>
+</button>
+
+{% include "blood/navbar.html" %}
+
+<div class="container mx-auto px-4 py-8 mt-16">
+    <div class="mb-10 text-center">
+        <h2 class="text-3xl font-bold text-brand-red dark:text-red-400">Search Blood Donors</h2>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">Find available donors nearby</p>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 mb-8 max-w-4xl mx-auto">
+        <form id="filterForm" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+            <div class="md:col-span-5">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-map-marker-alt text-gray-400"></i>
+                    </div>
+                    <input type="text" id="locationInput" class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-brand-red focus:border-brand-red dark:bg-gray-700 dark:text-white" placeholder="Enter City or Area">
+                </div>
+            </div>
+            
+            <div class="md:col-span-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Blood Group</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-tint text-gray-400"></i>
+                    </div>
+                    <select id="bloodGroupInput" class="w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-brand-red focus:border-brand-red dark:bg-gray-700 dark:text-white appearance-none">
+                        <option value="">All Blood Groups</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="md:col-span-3 flex gap-2">
+                <button type="submit" class="flex-1 bg-brand-red hover:bg-brand-dark text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    <i class="fas fa-search mr-1"></i> Search
+                </button>
+                <button type="button" id="resetBtn" class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    Reset
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingIndicator" class="hidden flex justify-center py-10">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorIndicator" class="hidden text-center py-10 text-red-500">
+        <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
+        <p>Error loading donors. Please try again.</p>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyIndicator" class="hidden text-center py-10 text-gray-500 dark:text-gray-400">
+        <i class="fas fa-user-slash text-4xl mb-3 opacity-50"></i>
+        <p class="text-lg">No donors found matching your criteria.</p>
+    </div>
+
+    <!-- Results Grid -->
+    <div id="donorsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Cards will be injected here by JS -->
+    </div>
+
+</div>
+
+<script>
+    // Theme toggle logic
+    const themeToggle = document.getElementById('themeToggle');
+    const htmlElement = document.documentElement;
+    
+    // Check local storage for theme preference
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        htmlElement.classList.add('dark');
+    } else {
+        htmlElement.classList.remove('dark');
+    }
+
+    themeToggle.addEventListener('click', () => {
+        htmlElement.classList.toggle('dark');
+        if (htmlElement.classList.contains('dark')) {
+            localStorage.setItem('theme', 'dark');
+        } else {
+            localStorage.setItem('theme', 'light');
+        }
+    });
+
+    // API fetch logic
+    const filterForm = document.getElementById('filterForm');
+    const locationInput = document.getElementById('locationInput');
+    const bloodGroupInput = document.getElementById('bloodGroupInput');
+    const resetBtn = document.getElementById('resetBtn');
+    const donorsGrid = document.getElementById('donorsGrid');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const errorIndicator = document.getElementById('errorIndicator');
+    const emptyIndicator = document.getElementById('emptyIndicator');
+
+    function fetchDonors() {
+        // Show loading, hide others
+        donorsGrid.innerHTML = '';
+        loadingIndicator.classList.remove('hidden');
+        errorIndicator.classList.add('hidden');
+        emptyIndicator.classList.add('hidden');
+
+        // Trim parameters
+        const locationVal = locationInput.value.trim();
+        const bloodGroupVal = bloodGroupInput.value.trim();
+
+        const params = new URLSearchParams();
+        if (locationVal) {
+            params.append('location', locationVal);
+        }
+        if (bloodGroupVal) {
+            params.append('bloodgroup', bloodGroupVal);
+        }
+
+        const url = `/donor/api/donors/?${params.toString()}`;
+        
+        // Debug API request in console before call
+        console.log(`[Frontend Debug] Fetching donors from: ${url} (Location: "${locationVal}", Blood Group: "${bloodGroupVal}")`);
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                loadingIndicator.classList.add('hidden');
+                
+                if (!data.donors || data.donors.length === 0) {
+                    emptyIndicator.classList.remove('hidden');
+                    return;
+                }
+
+                data.donors.forEach(donor => {
+                    const statusBadge = donor.is_available 
+                        ? `<span class="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 text-xs font-medium px-2.5 py-0.5 rounded-full border border-green-200 dark:border-green-800"><i class="fas fa-check-circle mr-1"></i> Available</span>`
+                        : `<span class="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 text-xs font-medium px-2.5 py-0.5 rounded-full border border-red-200 dark:border-red-800"><i class="fas fa-times-circle mr-1"></i> Unavailable</span>`;
+                    
+                    const genderIcon = donor.gender === 'Female' ? 'fa-venus' : donor.gender === 'Male' ? 'fa-mars' : 'fa-genderless';
+
+                    const card = document.createElement('div');
+                    card.className = "bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow relative group";
+                    card.innerHTML = `
+                        <div class="h-2 bg-brand-red w-full"></div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-1">${donor.name}</h3>
+                                    ${statusBadge}
+                                </div>
+                                <div class="bg-brand-light dark:bg-brand-dark/30 text-brand-red dark:text-red-400 rounded-full h-12 w-12 flex items-center justify-center font-bold text-lg border-2 border-brand-red/20 shadow-sm">
+                                    ${donor.bloodgroup}
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3 mb-6">
+                                <div class="flex items-center text-gray-600 dark:text-gray-400 text-sm">
+                                    <div class="w-6 flex justify-center"><i class="fas fa-map-marker-alt"></i></div>
+                                    <span class="truncate">${donor.location || 'Location not provided'}</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 dark:text-gray-400 text-sm">
+                                    <div class="w-6 flex justify-center"><i class="fas ${genderIcon}"></i></div>
+                                    <span>${donor.gender || 'Not specified'}</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 dark:text-gray-400 text-sm">
+                                    <div class="w-6 flex justify-center"><i class="fas fa-calendar-alt"></i></div>
+                                    <span>Last Donated: <span class="font-medium text-gray-800 dark:text-gray-200">${donor.last_donation_date || 'Unknown'}</span></span>
+                                </div>
+                            </div>
+                            
+                            <button onclick="alert('Contact Number: ${donor.mobile}')" class="w-full bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-medium py-2.5 px-4 rounded-xl transition-colors border border-gray-200 dark:border-gray-600 flex items-center justify-center gap-2 group-hover:border-brand-red/50">
+                                <i class="fas fa-phone-alt text-brand-red"></i> Contact Donor
+                            </button>
+                        </div>
+                    `;
+                    donorsGrid.appendChild(card);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching donors:', error);
+                loadingIndicator.classList.add('hidden');
+                errorIndicator.classList.remove('hidden');
+            });
+    }
+
+    // Initial fetch
+    fetchDonors();
+
+    // Handle form submit
+    filterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        fetchDonors();
+    });
+
+    // Handle reset
+    resetBtn.addEventListener('click', () => {
+        locationInput.value = '';
+        bloodGroupInput.value = '';
+        fetchDonors();
+    });
+</script>
+
+</body>
+</html>

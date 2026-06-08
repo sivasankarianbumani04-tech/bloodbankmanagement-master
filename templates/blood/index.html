@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Bank Management System</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#ff0018',
+                            dark: '#99000e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{% static "image/homepage.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 80vh;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+{% include "blood/navbar.html" %}
+
+<!-- Hero Section -->
+<section class="hero-section flex items-center justify-center text-center mt-14">
+    <div class="container mx-auto px-4">
+        <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">Save a Life, Donate Blood</h1>
+        <p class="text-xl md:text-2xl text-gray-200 mb-10 max-w-3xl mx-auto drop-shadow-md">Your contribution can bring a smile to someone's face and give them a second chance at life.</p>
+        
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="/donor/donorsignup" class="bg-brand-red hover:bg-brand-dark text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 text-lg">
+                Become a Donor
+            </a>
+            <a href="/donor/donors" class="bg-white hover:bg-gray-100 text-brand-red font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 text-lg">
+                Find Blood
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Emergency Requests Section -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-3">
+                <i class="fas fa-exclamation-triangle text-red-500 mr-2 animate-pulse"></i> 
+                Urgent Blood Requests
+            </h2>
+            <p class="text-gray-500">These patients need your help immediately.</p>
+        </div>
+
+        {% if emergency_requests %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {% for req in emergency_requests %}
+            <div class="bg-red-50 rounded-2xl p-6 border border-red-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-all">
+                <div class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
+                    URGENT
+                </div>
+                
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="bg-white text-brand-red font-black text-2xl h-16 w-16 rounded-full flex items-center justify-center border-4 border-red-100 shadow-sm">
+                        {{req.bloodgroup}}
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">{{req.patient_name}}</h3>
+                        <p class="text-sm text-gray-600"><i class="fas fa-hospital-alt mr-1"></i> {{req.hospital_name|default:"Hospital not specified"}}</p>
+                    </div>
+                </div>
+
+                <div class="space-y-2 mb-6">
+                    <p class="text-sm text-gray-700"><strong>Reason:</strong> {{req.reason}}</p>
+                    <p class="text-sm text-gray-700"><strong>Units Needed:</strong> {{req.unit}} Units</p>
+                    <p class="text-sm text-gray-700"><strong>Location:</strong> {{req.location|default:"Not specified"}}</p>
+                </div>
+
+                <a href="/donor/donorsignup" class="block w-full text-center bg-brand-red hover:bg-brand-dark text-white font-medium py-2 rounded-xl transition-colors">
+                    Donate Now
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-10">
+            <div class="inline-block bg-green-50 rounded-full p-4 mb-4">
+                <i class="fas fa-check-circle text-4xl text-green-500"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800">No urgent requests at the moment</h3>
+            <p class="text-gray-500 mt-2">Our blood banks are currently stable. Thank you to all donors!</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Quote Section -->
+<section class="py-16 bg-gray-50 text-center">
+    <div class="container mx-auto px-4 max-w-3xl">
+        <i class="fas fa-quote-left text-4xl text-gray-300 mb-6"></i>
+        <h2 class="text-2xl md:text-3xl font-light text-gray-800 italic mb-6 leading-relaxed">
+            "Opportunities knock the door sometimes, so don't let it go and donate blood."
+        </h2>
+        <p class="text-gray-500 font-medium">- Blood Bank Management Team</p>
+    </div>
+</section>
+
+{% include "blood/footer.html" %}
+
+</body>
+</html>

@@ -1,0 +1,307 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Donor Signup</title>
+
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"
+          rel="stylesheet">
+
+    <link href="{% static 'css/main.css' %}"
+          rel="stylesheet"
+          media="all">
+
+</head>
+
+<body>
+
+{% include "blood/navbar.html" %}
+
+<div class="page-wrapper bg-gra-03 p-t-45 p-b-50">
+
+    <div class="wrapper wrapper--w790">
+
+        <br><br><br>
+
+        <div class="card card-5">
+
+            <div class="card-heading">
+
+                <h2 class="title">
+
+                    Donor Signup
+
+                </h2>
+
+            </div>
+
+            <div class="card-body">
+
+                <form method="post"
+                      enctype="multipart/form-data">
+
+                    {% csrf_token %}
+
+                    <!-- FIRST NAME -->
+                    <div class="form-row">
+
+                        <div class="name">
+
+                            First Name
+
+                        </div>
+
+                        <div class="value">
+
+                            <div class="input-group">
+
+                                {% render_field userForm.first_name class="input--style-5" placeholder="Enter First Name" %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- LAST NAME -->
+                    <div class="form-row">
+
+                        <div class="name">
+
+                            Last Name
+
+                        </div>
+
+                        <div class="value">
+
+                            <div class="input-group">
+
+                                {% render_field userForm.last_name class="input--style-5" placeholder="Enter Last Name" %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- USERNAME -->
+                    <div class="form-row">
+
+                        <div class="name">
+
+                            Username
+
+                        </div>
+
+                        <div class="value">
+
+                            <div class="input-group">
+
+                                {% render_field userForm.username class="input--style-5" placeholder="Enter Username" %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+                    <div class="form-row">
+
+                        <div class="name">
+
+                            Password
+
+                        </div>
+
+                        <div class="value">
+
+                            <div class="input-group">
+
+                                {% render_field userForm.password class="input--style-5" placeholder="Enter Password" type="password" %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- BLOOD GROUP -->
+                    <div class="form-row">
+
+                        <div class="name">
+
+                            Blood Group
+
+                        </div>
+
+                        <div class="value">
+
+                            <div class="input-group">
+
+                                <div class="rs-select2 js-select-simple select--no-search">
+
+                                    <select name="bloodgroup" required>
+
+                                        <option value="" selected disabled>
+
+                                            Choose Blood Group
+
+                                        </option>
+
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+
+                                    </select>
+
+                                    <div class="select-dropdown"></div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ADDRESS -->
+                    <div class="form-row">
+
+                        <div class="name">
+
+                            Address
+
+                        </div>
+
+                        <div class="value">
+
+                            <div class="input-group">
+
+                                {% render_field donorForm.address class="input--style-5" placeholder="Enter Address / City" %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MOBILE -->
+                    <div class="form-row">
+
+                        <div class="name">
+
+                            Mobile
+
+                        </div>
+
+                        <div class="value">
+
+                            <div class="input-group">
+
+                                {% render_field donorForm.mobile class="input--style-5" placeholder="Enter Mobile Number" %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROFILE PIC -->
+                    <div class="form-row">
+
+                        <div class="name">
+
+                            Profile Picture
+
+                        </div>
+
+                        <div class="value">
+
+                            <div class="input-group">
+
+                                {% render_field donorForm.profile_pic class="input--style-5" %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- REGISTER BUTTON -->
+                    <div>
+
+                        <button class="btn btn--radius-2 btn-danger"
+                                type="submit">
+
+                            Register
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <br>
+
+                <p style="text-align:center;">
+
+                    Already have an account ?
+
+                    <a href="/donor/donorlogin/"
+                       style="text-decoration:none;">
+
+                        Click here to login
+
+                    </a>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% include "blood/login_footer.html" %}
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+{% extends 'blood/adminbase.html' %}
+{% block content %}
+<div class="p-6 bg-gray-50 min-h-screen">
+    
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+        <p class="text-gray-500">Overview of blood bank status and operations</p>
+    </div>
+
+    <!-- Overview Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Total Donors</p>
+                <h3 class="text-3xl font-bold text-gray-800">{{totaldonors}}</h3>
+            </div>
+            <div class="bg-blue-50 h-14 w-14 rounded-full flex items-center justify-center text-blue-500 text-2xl">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Total Requests</p>
+                <h3 class="text-3xl font-bold text-gray-800">{{totalrequest}}</h3>
+            </div>
+            <div class="bg-yellow-50 h-14 w-14 rounded-full flex items-center justify-center text-yellow-500 text-2xl">
+                <i class="fas fa-spinner"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Approved Requests</p>
+                <h3 class="text-3xl font-bold text-gray-800">{{totalapprovedrequest}}</h3>
+            </div>
+            <div class="bg-green-50 h-14 w-14 rounded-full flex items-center justify-center text-green-500 text-2xl">
+                <i class="far fa-check-circle"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div>
+                <p class="text-sm font-medium text-gray-500 mb-1">Total Blood Units (ml)</p>
+                <h3 class="text-3xl font-bold text-gray-800">{{totalbloodunit}}</h3>
+            </div>
+            <div class="bg-red-50 h-14 w-14 rounded-full flex items-center justify-center text-brand-red text-2xl">
+                <i class="fas fa-tint"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blood Stock Levels -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Blood Groups Grid -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-6">Blood Stock Availability</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                
+                <!-- A+ -->
+                <div class="border border-gray-100 rounded-xl p-4 text-center hover:bg-gray-50 transition-colors">
+                    <div class="text-brand-red text-2xl font-bold mb-2 flex justify-center items-center gap-1">A+ <i class="fas fa-tint text-sm"></i></div>
+                    <div class="text-3xl font-bold text-gray-800">{{A1.unit}} <span class="text-sm font-normal text-gray-500">Units</span></div>
+                </div>
+
+                <!-- B+ -->
+                <div class="border border-gray-100 rounded-xl p-4 text-center hover:bg-gray-50 transition-colors">
+                    <div class="text-brand-red text-2xl font-bold mb-2 flex justify-center items-center gap-1">B+ <i class="fas fa-tint text-sm"></i></div>
+                    <div class="text-3xl font-bold text-gray-800">{{B1.unit}} <span class="text-sm font-normal text-gray-500">Units</span></div>
+                </div>
+
+                <!-- O+ -->
+                <div class="border border-gray-100 rounded-xl p-4 text-center hover:bg-gray-50 transition-colors">
+                    <div class="text-brand-red text-2xl font-bold mb-2 flex justify-center items-center gap-1">O+ <i class="fas fa-tint text-sm"></i></div>
+                    <div class="text-3xl font-bold text-gray-800">{{O1.unit}} <span class="text-sm font-normal text-gray-500">Units</span></div>
+                </div>
+
+                <!-- AB+ -->
+                <div class="border border-gray-100 rounded-xl p-4 text-center hover:bg-gray-50 transition-colors">
+                    <div class="text-brand-red text-2xl font-bold mb-2 flex justify-center items-center gap-1">AB+ <i class="fas fa-tint text-sm"></i></div>
+                    <div class="text-3xl font-bold text-gray-800">{{AB1.unit}} <span class="text-sm font-normal text-gray-500">Units</span></div>
+                </div>
+
+                <!-- A- -->
+                <div class="border border-gray-100 rounded-xl p-4 text-center hover:bg-gray-50 transition-colors">
+                    <div class="text-brand-red text-2xl font-bold mb-2 flex justify-center items-center gap-1">A- <i class="fas fa-tint text-sm"></i></div>
+                    <div class="text-3xl font-bold text-gray-800">{{A2.unit}} <span class="text-sm font-normal text-gray-500">Units</span></div>
+                </div>
+
+                <!-- B- -->
+                <div class="border border-gray-100 rounded-xl p-4 text-center hover:bg-gray-50 transition-colors">
+                    <div class="text-brand-red text-2xl font-bold mb-2 flex justify-center items-center gap-1">B- <i class="fas fa-tint text-sm"></i></div>
+                    <div class="text-3xl font-bold text-gray-800">{{B2.unit}} <span class="text-sm font-normal text-gray-500">Units</span></div>
+                </div>
+
+                <!-- O- -->
+                <div class="border border-gray-100 rounded-xl p-4 text-center hover:bg-gray-50 transition-colors">
+                    <div class="text-brand-red text-2xl font-bold mb-2 flex justify-center items-center gap-1">O- <i class="fas fa-tint text-sm"></i></div>
+                    <div class="text-3xl font-bold text-gray-800">{{O2.unit}} <span class="text-sm font-normal text-gray-500">Units</span></div>
+                </div>
+
+                <!-- AB- -->
+                <div class="border border-gray-100 rounded-xl p-4 text-center hover:bg-gray-50 transition-colors">
+                    <div class="text-brand-red text-2xl font-bold mb-2 flex justify-center items-center gap-1">AB- <i class="fas fa-tint text-sm"></i></div>
+                    <div class="text-3xl font-bold text-gray-800">{{AB2.unit}} <span class="text-sm font-normal text-gray-500">Units</span></div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-6">Stock Distribution</h2>
+            <div class="relative h-64">
+                <canvas id="bloodStockChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('bloodStockChart').getContext('2d');
+    const bloodStockChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['A+', 'B+', 'O+', 'AB+', 'A-', 'B-', 'O-', 'AB-'],
+            datasets: [{
+                label: 'Blood Units',
+                data: [
+                    {{A1.unit|default:"0"}}, 
+                    {{B1.unit|default:"0"}}, 
+                    {{O1.unit|default:"0"}}, 
+                    {{AB1.unit|default:"0"}}, 
+                    {{A2.unit|default:"0"}}, 
+                    {{B2.unit|default:"0"}}, 
+                    {{O2.unit|default:"0"}}, 
+                    {{AB2.unit|default:"0"}}
+                ],
+                backgroundColor: [
+                    '#FF4D4D', '#FF3333', '#FF1A1A', '#FF0000', 
+                    '#E60000', '#CC0000', '#B30000', '#990000'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                }
+            },
+            cutout: '70%'
+        }
+    });
+});
+</script>
+{% endblock content %}

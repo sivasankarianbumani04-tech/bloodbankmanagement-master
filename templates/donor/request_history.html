@@ -1,0 +1,82 @@
+{% extends 'donor/donorbase.html' %}
+{% block content %}
+
+<div class="p-6 bg-gray-50 min-h-screen">
+    
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">My Blood Requests</h1>
+        <p class="text-gray-500">Track the status of the blood requests you've made</p>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="flex flex-wrap gap-4 mb-8">
+        <a href="{% url 'donor-dashboard' %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-5 rounded-lg transition-colors flex items-center gap-2">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <a href="{% url 'make-request' %}" class="bg-brand-red hover:bg-brand-dark text-white font-medium py-2 px-5 rounded-lg shadow-sm hover:shadow transition-colors flex items-center gap-2">
+            <i class="fas fa-plus"></i> New Request
+        </a>
+    </div>
+
+    <!-- History Table -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider border-b border-gray-200">
+                        <th class="p-4 font-medium">Date</th>
+                        <th class="p-4 font-medium">Patient Name</th>
+                        <th class="p-4 font-medium">Age</th>
+                        <th class="p-4 font-medium">Reason</th>
+                        <th class="p-4 font-medium">Blood Group</th>
+                        <th class="p-4 font-medium">Units (ml)</th>
+                        <th class="p-4 font-medium">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for t in blood_request %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="p-4 text-gray-800 font-medium whitespace-nowrap">{{t.date}}</td>
+                        <td class="p-4 text-gray-800 font-bold">{{t.patient_name}}</td>
+                        <td class="p-4 text-gray-600">{{t.patient_age}}</td>
+                        <td class="p-4 text-gray-600 truncate max-w-xs" title="{{t.reason}}">{{t.reason}}</td>
+                        <td class="p-4">
+                            <span class="inline-flex items-center justify-center bg-red-100 text-brand-red font-bold rounded-full h-8 w-8 text-sm">
+                                {{t.bloodgroup}}
+                            </span>
+                        </td>
+                        <td class="p-4 text-gray-600">{{t.unit}}</td>
+                        <td class="p-4">
+                            {% if t.status == 'Approved' %}
+                                <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full flex items-center inline-flex w-max">
+                                    <i class="fas fa-check-circle mr-1"></i> Approved
+                                </span>
+                            {% elif t.status == 'Rejected' %}
+                                <span class="bg-red-100 text-red-800 text-xs font-semibold px-3 py-1 rounded-full flex items-center inline-flex w-max">
+                                    <i class="fas fa-times-circle mr-1"></i> Rejected
+                                </span>
+                            {% else %}
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full flex items-center inline-flex w-max">
+                                    <i class="fas fa-clock mr-1"></i> Pending
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-gray-500">
+                            <div class="flex flex-col items-center justify-center">
+                                <i class="fas fa-folder-open text-4xl text-gray-300 mb-3"></i>
+                                <p class="text-lg">No blood requests found.</p>
+                                <a href="{% url 'make-request' %}" class="mt-4 text-brand-red font-medium hover:underline">Submit a new request</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

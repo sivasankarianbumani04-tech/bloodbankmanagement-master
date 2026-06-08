@@ -1,0 +1,428 @@
+{% extends 'blood/adminbase.html' %}
+{% block content %}
+<div class="p-6 max-w-6xl mx-auto">
+    <!-- Breadcrumb & Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 border-b pb-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                <i class="fas fa-upload text-brand-red"></i>
+                Bulk Import Donors
+            </h1>
+            <p class="text-slate-500 text-sm mt-1">Import multiple donor profiles instantly using raw text formatting.</p>
+        </div>
+        <a href="/admin-donor" class="mt-4 md:mt-0 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold inline-flex items-center gap-2 transition-colors">
+            <i class="fas fa-arrow-left"></i> Back to Donors
+        </a>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Paste Area & Details -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Instructions and Format Card -->
+            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-slate-800 flex items-center gap-2 mb-3">
+                    <i class="fas fa-info-circle text-sky-500"></i>
+                    Expected Data Format
+                </h2>
+                <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 font-mono text-xs text-slate-600 mb-4 select-all">
+                    NAME | BLOOD GROUP | CITY | GENDER | PHONE NUMBER
+                </div>
+                
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Example Record:</h3>
+                <div class="bg-slate-50 border border-slate-100 rounded-lg p-3 font-mono text-xs text-slate-500 mb-4">
+                    ARAVIND S | O+ | Chennai | Male | 9999999991
+                </div>
+
+                <div class="flex items-center justify-between border-t pt-4">
+                    <span class="text-xs text-slate-500">Quick Test: copy sample data to paste below.</span>
+                    <button type="button" id="btn-copy-test" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-md text-xs font-semibold flex items-center gap-1 transition-colors">
+                        <i class="fas fa-copy"></i> Copy Sample Dataset
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input area -->
+            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm relative">
+                <label for="paste-area" class="block text-sm font-bold text-slate-800 mb-2">Paste Donor Data Here</label>
+                <textarea id="paste-area" rows="12" class="w-full font-mono text-sm p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-brand-red outline-none transition-shadow" placeholder="Paste data here...&#10;MUTHURAM M | A+ve | Chennai | Male | 8939125191&#10;PAVITHRA J | B+ | Chennai | Female | 7871704888"></textarea>
+                
+                <div class="mt-4 flex items-center justify-between">
+                    <button type="button" id="btn-clear" class="px-4 py-2 text-slate-500 hover:text-slate-800 text-sm font-medium transition-colors">
+                        Clear Input
+                    </button>
+                    
+                    <button type="button" id="btn-import" disabled class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white rounded-lg text-sm font-bold shadow-md shadow-emerald-100 disabled:shadow-none flex items-center gap-2 transition-all">
+                        <span id="btn-import-text"><i class="fas fa-check-double"></i> Import Donors</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Statistics and Helper Sidebar -->
+        <div class="space-y-6">
+            <!-- Live Statistics Panel -->
+            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-chart-pie text-indigo-500"></i>
+                    Parse Statistics
+                </h2>
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="bg-slate-50 rounded-lg p-3 border border-slate-100">
+                        <div class="text-2xl font-bold text-slate-700" id="stats-total">0</div>
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">Total</div>
+                    </div>
+                    <div class="bg-emerald-50 rounded-lg p-3 border border-emerald-100">
+                        <div class="text-2xl font-bold text-emerald-700" id="stats-valid">0</div>
+                        <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider mt-1">Valid</div>
+                    </div>
+                    <div class="bg-rose-50 rounded-lg p-3 border border-rose-100">
+                        <div class="text-2xl font-bold text-rose-700" id="stats-invalid">0</div>
+                        <div class="text-[10px] font-bold text-rose-400 uppercase tracking-wider mt-1">Invalid</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schema Details and Help -->
+            <div class="bg-gradient-to-br from-rose-500 to-rose-600 text-white rounded-xl p-5 shadow-md relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-10">
+                    <i class="fas fa-heartbeat text-9xl"></i>
+                </div>
+                <h2 class="text-base font-bold flex items-center gap-2 mb-3">
+                    <i class="fas fa-notes-medical"></i>
+                    System Guidelines
+                </h2>
+                <ul class="text-xs space-y-2.5 opacity-90">
+                    <li class="flex gap-2">
+                        <i class="fas fa-check mt-0.5"></i>
+                        <span><strong>Phone numbers</strong> serve as login usernames and must be unique 10-digit numbers.</span>
+                    </li>
+                    <li class="flex gap-2">
+                        <i class="fas fa-check mt-0.5"></i>
+                        <span><strong>Blood groups</strong> are normalized automatically (e.g. <code>O+ve</code> and <code>O positive</code> become <code>O+</code>).</span>
+                    </li>
+                    <li class="flex gap-2">
+                        <i class="fas fa-check mt-0.5"></i>
+                        <span><strong>Passwords</strong> default to <code>donor123</code> for all bulk imported profiles.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Preview Table Section -->
+    <div id="preview-container" class="hidden mt-8 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b bg-slate-50 flex items-center justify-between">
+            <h2 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                <i class="fas fa-table text-slate-500"></i>
+                Parsed Records Live Preview
+            </h2>
+            <span class="text-xs text-slate-400 font-medium">Verify details before committing to import</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-sm">
+                <thead>
+                    <tr class="bg-slate-100 text-slate-600 font-semibold text-xs border-b">
+                        <th class="px-4 py-3 border-r">Name</th>
+                        <th class="px-4 py-3 border-r">Blood Group</th>
+                        <th class="px-4 py-3 border-r">City/Address</th>
+                        <th class="px-4 py-3 border-r">Gender</th>
+                        <th class="px-4 py-3 border-r">Phone</th>
+                        <th class="px-4 py-3">Import Status / Validation Error</th>
+                    </tr>
+                </thead>
+                <tbody id="preview-body" class="divide-y">
+                    <!-- Dynamic Rows Go Here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Toast Container -->
+<div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col items-end max-w-sm"></div>
+
+<!-- Fullscreen Spinner Overlay -->
+<div id="loading-spinner" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center gap-4 border max-w-xs text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-4 border-rose-600 border-t-transparent"></div>
+        <div>
+            <h3 class="font-bold text-slate-800 text-base">Importing Donors</h3>
+            <p class="text-slate-500 text-xs mt-1">Please wait, saving records and setting up user credentials...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Test dataset -->
+<script>
+    const TEST_DATASET = `ABINESH S | 0+ve | CHENNAI | Male | 8122545886
+ALTHAF M | O+ | Arakkonam | Male | 8248841987
+ANBUNILA M | B+ | Nagapattinam | Male | 8015889225
+ANSHI JEBA J | O+ | Chennai | Male | 7604987612
+ARAVIND S | O+ | Chennai | Male | 9999999991
+ARAVINDAN T | O+positive | Chennai | Male | 8610458220
+ARIVAZHAGAN M | B+ | CHENNAI | Male | 9999999992
+BALA VIGNESHWARAN V | O+ve | Minjur | Male | 8122927616
+BAVYASHREE T | B+VE | Chennai | Female | 7604955728
+BOOPATHY A | AB positive | PULIYANTHOPE | Male | 7845953590
+CHANDER SINGH | B+ | KRISHNAGIRI | Male | 8112266596
+DHANALAKSHMI R | B+ | Chennai | Female | 8015014152
+DHANASEKARAN M | O+ | Chennai | Male | 8310708238
+DINESH B | B+ | Edayanchavadi | Male | 9677267813
+HARINI R | O+ | CHENNAI | Female | 9176069843
+HARISH S | O+ | Chennai | Male | 6381484789
+HEMALAKSHMI R | B+ | Avadi | Female | 9047496065
+KISHORE A | O+ | Poonamallee | Male | 8438103545
+MOHAMMED AJMALDEEN | O+ve | Ranipet | Male | 7904631628
+NAVEEN KUMAR A | B+ | Gummidipoondi | Male | 8015748154
+POOJA.M | O+ve | Puzhal | Female | 8838216585
+RESHMAN RAJ S | O+ | Neyveli | Female | 7200429639
+ROHITH A | O+ | Chennai | Male | 6385291724
+SAKTHI B V | B+ | Chennai | Male | 9363083254
+SRILEKHA K | O+ | Kumbakonam | Female | 6382914522
+SYED MOHAMMED ARIF A | A+ | Tirupathur | Male | 8838795059
+THARUN KUMAR M | B+ | Chennai | Male | 8778051925
+YOGA SANJAY S | B+ | CHENNAI | Male | 6374164884`;
+
+    document.getElementById('btn-copy-test').addEventListener('click', () => {
+        navigator.clipboard.writeText(TEST_DATASET);
+        showToast('Sample dataset copied to clipboard!', 'info');
+    });
+</script>
+
+<!-- Parser & Logic JS -->
+<script>
+    const textarea = document.getElementById('paste-area');
+    const previewBody = document.getElementById('preview-body');
+    const previewContainer = document.getElementById('preview-container');
+    const btnImport = document.getElementById('btn-import');
+    const btnClear = document.getElementById('btn-clear');
+    const statsTotal = document.getElementById('stats-total');
+    const statsValid = document.getElementById('stats-valid');
+    const statsInvalid = document.getElementById('stats-invalid');
+    const spinner = document.getElementById('loading-spinner');
+    const toastContainer = document.getElementById('toast-container');
+
+    let parsedDonors = [];
+    let validDonors = [];
+    let invalidCount = 0;
+
+    textarea.addEventListener('input', parseInput);
+    btnClear.addEventListener('click', () => {
+        textarea.value = '';
+        parseInput();
+        showToast('Input cleared', 'info');
+    });
+
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `p-4 mb-3 rounded-lg shadow-lg text-white font-medium flex items-center transition-all duration-300 transform translate-y-2 opacity-0 ` +
+            (type === 'success' ? 'bg-emerald-500' : type === 'error' ? 'bg-rose-500' : 'bg-amber-500');
+        toast.innerHTML = `
+            <span class="mr-2">${type === 'success' ? '<i class="fas fa-check-circle"></i>' : type === 'error' ? '<i class="fas fa-times-circle"></i>' : '<i class="fas fa-exclamation-triangle"></i>'}</span>
+            <span>${message}</span>
+        `;
+        toastContainer.appendChild(toast);
+        
+        // Animate in
+        setTimeout(() => {
+            toast.classList.remove('translate-y-2', 'opacity-0');
+        }, 10);
+        
+        // Remove after timeout
+        setTimeout(() => {
+            toast.classList.add('opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+
+    function normalizeBloodGroup(bg) {
+        if (!bg) return "";
+        let s = bg.toUpperCase().trim().replace(/\s+/g, '');
+        if (s.startsWith('0')) {
+            s = 'O' + s.slice(1);
+        }
+        
+        if (s.includes('AB')) {
+            return (s.includes('-') || s.includes('NEG')) ? 'AB-' : 'AB+';
+        } else if (s.includes('A')) {
+            return (s.includes('-') || s.includes('NEG')) ? 'A-' : 'A+';
+        } else if (s.includes('B')) {
+            return (s.includes('-') || s.includes('NEG')) ? 'B-' : 'B+';
+        } else if (s.includes('O')) {
+            return (s.includes('-') || s.includes('NEG')) ? 'O-' : 'O+';
+        }
+        return bg;
+    }
+
+    function parseInput() {
+        const text = textarea.value;
+        const lines = text.split('\n');
+        previewBody.innerHTML = '';
+        parsedDonors = [];
+        validDonors = [];
+        invalidCount = 0;
+        
+        let hasRecords = false;
+        
+        lines.forEach((line) => {
+            if (!line.trim()) return;
+            hasRecords = true;
+            const parts = line.split('|').map(x => x.trim());
+            
+            let name = parts[0] || '';
+            let bg = parts[1] || '';
+            let city = parts[2] || '';
+            let gender = parts[3] || '';
+            let mobile = (parts[4] || '').replace(".0", "").replace(/\s+/g, '');
+            
+            let errors = [];
+            
+            if (!name) errors.push('Name is required');
+            
+            if (!bg) {
+                errors.push('Blood Group is required');
+            } else {
+                const normalized = normalizeBloodGroup(bg);
+                if (!['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].includes(normalized)) {
+                    errors.push(`Invalid blood group: ${bg}`);
+                } else {
+                    bg = normalized; // replace with normalized for valid row preview
+                }
+            }
+            
+            if (!city) errors.push('City is required');
+            
+            if (!gender) {
+                errors.push('Gender is required');
+            } else {
+                const gLower = gender.toLowerCase();
+                if (gLower.includes('female')) {
+                    gender = 'Female';
+                } else if (gLower.includes('male')) {
+                    gender = 'Male';
+                } else if (gLower.includes('other')) {
+                    gender = 'Other';
+                } else {
+                    errors.push('Gender must be Male, Female, or Other');
+                }
+            }
+            
+            if (!mobile) {
+                errors.push('Phone is required');
+            } else if (!/^\d{10}$/.test(mobile)) {
+                errors.push('Phone must be exactly 10 digits');
+            }
+            
+            const donor = { name, bloodgroup: bg, address: city, gender, mobile };
+            
+            const row = document.createElement('tr');
+            if (errors.length > 0) {
+                invalidCount++;
+                row.className = 'bg-rose-50/70 border-rose-200 text-rose-900';
+                row.innerHTML = `
+                    <td class="px-4 py-2.5 border-r font-medium">${name || '<span class="text-rose-400 italic">Empty</span>'}</td>
+                    <td class="px-4 py-2.5 border-r font-semibold">${bg || '<span class="text-rose-400 italic">Empty</span>'}</td>
+                    <td class="px-4 py-2.5 border-r">${city || '<span class="text-rose-400 italic">Empty</span>'}</td>
+                    <td class="px-4 py-2.5 border-r">${gender || '<span class="text-rose-400 italic">Empty</span>'}</td>
+                    <td class="px-4 py-2.5 border-r font-mono">${mobile || '<span class="text-rose-400 italic">Empty</span>'}</td>
+                    <td class="px-4 py-2.5 text-rose-600 font-bold text-xs"><i class="fas fa-exclamation-triangle mr-1"></i> ${errors.join(', ')}</td>
+                `;
+            } else {
+                validDonors.push(donor);
+                row.className = 'border-gray-200 hover:bg-slate-50';
+                row.innerHTML = `
+                    <td class="px-4 py-2.5 border-r font-medium text-slate-800">${name}</td>
+                    <td class="px-4 py-2.5 border-r"><span class="px-2 py-0.5 rounded bg-rose-600 text-white text-xs font-semibold">${bg}</span></td>
+                    <td class="px-4 py-2.5 border-r text-slate-600">${city}</td>
+                    <td class="px-4 py-2.5 border-r text-slate-600">${gender}</td>
+                    <td class="px-4 py-2.5 border-r text-slate-600 font-mono">${mobile}</td>
+                    <td class="px-4 py-2.5 text-emerald-600 font-semibold text-xs"><i class="fas fa-check-circle mr-1"></i> Ready to import</td>
+                `;
+            }
+            previewBody.appendChild(row);
+            parsedDonors.push(donor);
+        });
+        
+        if (hasRecords) {
+            previewContainer.classList.remove('hidden');
+        } else {
+            previewContainer.classList.add('hidden');
+        }
+        
+        statsTotal.textContent = parsedDonors.length;
+        statsValid.textContent = validDonors.length;
+        statsInvalid.textContent = invalidCount;
+        
+        btnImport.disabled = (validDonors.length === 0);
+    }
+
+    btnImport.addEventListener('click', async () => {
+        if (validDonors.length === 0) return;
+        
+        btnImport.disabled = true;
+        spinner.classList.remove('hidden');
+        
+        try {
+            const response = await fetch('/api/donors/bulk-import', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ donors: validDonors })
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok && result.success) {
+                showToast(`Import completed! ${result.success_count} donors saved successfully.`, 'success');
+                if (result.failed_count > 0) {
+                    showToast(`${result.failed_count} records failed validation or duplicate phone numbers.`, 'error');
+                    renderFailedRecords(result.failed_records);
+                } else {
+                    textarea.value = '';
+                    parseInput();
+                    // Redirect back to donor details table instantly
+                    setTimeout(() => {
+                        window.location.href = '/admin-donor';
+                    }, 2000);
+                }
+            } else {
+                showToast(result.error || 'Server error occurred during import.', 'error');
+            }
+        } catch (err) {
+            showToast('Network error, please try again.', 'error');
+            console.error(err);
+        } finally {
+            spinner.classList.add('hidden');
+            btnImport.disabled = (validDonors.length === 0);
+        }
+    });
+
+    function renderFailedRecords(failedList) {
+        previewBody.innerHTML = '';
+        previewContainer.classList.remove('hidden');
+        btnImport.disabled = true;
+        
+        statsTotal.textContent = failedList.length;
+        statsValid.textContent = '0';
+        statsInvalid.textContent = failedList.length;
+        
+        failedList.forEach(item => {
+            const d = item.record;
+            const errors = item.errors;
+            const row = document.createElement('tr');
+            row.className = 'bg-rose-50/70 border-rose-200 text-rose-900';
+            row.innerHTML = `
+                <td class="px-4 py-2.5 border-r font-medium">${d.name || '<span class="text-rose-400 italic">Empty</span>'}</td>
+                <td class="px-4 py-2.5 border-r font-semibold">${d.bloodgroup || '<span class="text-rose-400 italic">Empty</span>'}</td>
+                <td class="px-4 py-2.5 border-r">${d.address || '<span class="text-rose-400 italic">Empty</span>'}</td>
+                <td class="px-4 py-2.5 border-r">${d.gender || '<span class="text-rose-400 italic">Empty</span>'}</td>
+                <td class="px-4 py-2.5 border-r font-mono">${d.mobile || '<span class="text-rose-400 italic">Empty</span>'}</td>
+                <td class="px-4 py-2.5 text-rose-600 font-bold text-xs"><i class="fas fa-exclamation-circle mr-1"></i> ${errors.join(', ')}</td>
+            `;
+            previewBody.appendChild(row);
+        });
+    }
+</script>
+{% endblock content %}
