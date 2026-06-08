@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Blood Bank Management System
 ![developer](https://img.shields.io/badge/Developed%20By%20%3A-Sumit%20Kumar-red)
 ---
@@ -78,3 +79,7 @@ http://127.0.0.1:8000/
 Any suggestion and feedback is welcome. You can message me on facebook
 - [Contact on Facebook](https://fb.com/sumit.luv)
 - [Subscribe my Channel LazyCoder On Youtube](https://youtube.com/lazycoders)
+=======
+# bloodbankmanagement-master
+A full-stack web application developed to manage blood donors, blood requests, blood stock, and hospital blood distribution efficiently. This system helps streamline blood bank operations by maintaining donor records, tracking available blood units, and managing emergency blood requests in a secure and user-friendly platform.
+>>>>>>> 4077570f9679a762e1ba4d8f4fd9fb93abb32ff8
