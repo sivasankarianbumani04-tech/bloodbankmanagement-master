@@ -1,85 +1,169 @@
-<<<<<<< HEAD
 # Blood Bank Management System
-![developer](https://img.shields.io/badge/Developed%20By%20%3A-Sumit%20Kumar-red)
----
-## Screenshots
-### Homepage
-![homepage snap](https://github.com/sumitkumar1503/bloodbankmanagement/blob/master/static/screenshot/homepage.png?raw=true)
-### Admin Dashboard
-![dashboard snap](https://github.com/sumitkumar1503/bloodbankmanagement/blob/master/static/screenshot/admindashboard.png?raw=true)
-### Blood Donation 
-![invoice snap](https://github.com/sumitkumar1503/bloodbankmanagement/blob/master/static/screenshot/blooddonation.png?raw=true)
-### Blood Request
-![doctor snap](https://github.com/sumitkumar1503/bloodbankmanagement/blob/master/static/screenshot/bloodrequest.png?raw=true)
-### Logout
-![doctor snap](https://github.com/sumitkumar1503/bloodbankmanagement/blob/master/static/screenshot/logout.png?raw=true)
----
-## Functions
 
-### Admin
-- Create Admin account using following command
-```
-py manage.py createsuperuser
-```
-- After Login, can see Unit of blood of each blood group available, Number Of Donor, Number of blood request, Number of approved request, Total Unit of blood on Dashboard.
-- Can View, Update, Delete Donor.
-- Can View, Update, Delete Patient.
-- Can View Donation Request made by donor and can approve or reject that request based on disease of donor.
-- If Donation Request approved by admin then that unit of blood added to blood stock of that blood group.
-- If Donation Request rejected by admin then 0 unit of blood added to stock.
-- Can View Blood Request made by donor / patient and can approve or reject that request.
-- If Blood Request approved by admin then that unit of blood reduced from blood stock of that blood group.
-- If Blood Request rejected by admin then 0 unit of blood reduced from stock.
-- Can see history of blood request.
-- Can Update Unit Of Particular Blood Group.
+## Overview
 
-
-### Donor
-- Donor can create account by providing basic details.
-- After Login, Donor can donate blood, After approval from admin only, blood will be added to blood stock.
-- Donor can see their donation history with status (Pending, Approved, Rejected).
-- Donor can also request for blood from blood stock.
-- Donor can see their blood request history with status.
-- Donor can see number of blood request Made, Approved, Pending, Rejected by Admin on their dashboard.
-> **_NOTE:_**  Donor can donate blood and can also request for blood.
-
-
-
-
-
-### Patient
-- Create account (No Approval Required By Admin, Can Login After Signup)
-- After Login, Can see number of blood request Made, Approved, Pending, Rejected by Admin on their dashboard.
-- Patient can request for blood of specific blood group and unit from blood stock.
-- Patient can see their blood request history with status (Pending, Approved, Rejected).
+Blood Bank Management System is a web-based application developed using Django to efficiently manage blood donors, patients, blood stock, and blood requests. The system provides a centralized platform for blood banks and hospitals to maintain records, process requests, and monitor blood availability.
 
 ---
 
-## HOW TO RUN THIS PROJECT
-- Install Python(3.7.6) (Dont Forget to Tick Add to Path while installing Python)
-- Download This Project Zip Folder and Extract it
-- Move to project folder in Terminal. Then run following Commands :
+## Features
 
-```
-python -m pip install -r requirements. txt
+### Admin Module
+
+* Manage donor records
+* Manage patient records
+* Approve or reject blood donations
+* Approve or reject blood requests
+* Monitor blood stock availability
+* View request and donation history
+* Access dashboard analytics and reports
+
+### Donor Module
+
+* Secure donor registration and login
+* Blood donation request submission
+* Blood request submission
+* View donation history
+* Track request approval status
+
+### Patient Module
+
+* Secure patient registration and login
+* Submit blood requests
+* View request history
+* Track approval and fulfillment status
+
+---
+
+## Technologies Used
+
+* Python
+* Django
+* HTML5
+* CSS3
+* Bootstrap
+* SQLite
+* Pandas
+
+---
+
+## Project Structure
+
+```text
+bloodbankmanagement/
+│
+├── blood/
+├── donor/
+├── patient/
+├── templates/
+├── static/
+├── db.sqlite3
+├── manage.py
+└── requirements.txt
 ```
 
+---
+
+## Installation
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/sumitkumar1503/bloodbankmanagement.git
+cd bloodbankmanagement
 ```
-py manage.py makemigrations
-py manage.py migrate
-py manage.py runserver
+
+### Create Virtual Environment
+
+```bash
+python -m venv venv
 ```
-- Now enter following URL in Your Browser Installed On Your Pc
+
+### Activate Virtual Environment
+
+Windows:
+
+```bash
+venv\Scripts\activate
 ```
+
+Linux/Mac:
+
+```bash
+source venv/bin/activate
+```
+
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Apply Migrations
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### Run the Server
+
+```bash
+python manage.py runserver
+```
+
+Open your browser and navigate to:
+
+```text
 http://127.0.0.1:8000/
 ```
 
+---
 
-## Feedback
-Any suggestion and feedback is welcome. You can message me on facebook
-- [Contact on Facebook](https://fb.com/sumit.luv)
-- [Subscribe my Channel LazyCoder On Youtube](https://youtube.com/lazycoders)
-=======
-# bloodbankmanagement-master
-A full-stack web application developed to manage blood donors, blood requests, blood stock, and hospital blood distribution efficiently. This system helps streamline blood bank operations by maintaining donor records, tracking available blood units, and managing emergency blood requests in a secure and user-friendly platform.
->>>>>>> 4077570f9679a762e1ba4d8f4fd9fb93abb32ff8
+## System Modules
+
+### Administrator
+
+* Manage donors and patients
+* Handle blood requests
+* Manage blood inventory
+* Generate reports
+
+### Donor
+
+* Register and login
+* Donate blood
+* Request blood
+* View personal history
+
+### Patient
+
+* Register and login
+* Request blood units
+* Track request status
+
+---
+
+## Database
+
+The application uses SQLite as the default database. Django ORM is used for database operations and relationship management.
+
+---
+
+## Future Enhancements
+
+* Email notifications
+* SMS alerts
+* Blood request prioritization
+* Hospital integration
+* Advanced analytics dashboard
+* REST API support
+
+---
+
+## License
+
+This project is intended for educational and academic purposes.
+
+---
+
